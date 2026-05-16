@@ -10,7 +10,7 @@ export default function Home() {
     fetch("/api/hello")
       .then((res) => res.json())
       .then((data) => setMessage(data.message))
-      .catch((err) => setMessage("通信エラー: Hono を起動していますか?"));
+      .catch((err) => setMessage(`error: ${err}`));
   }, []);
 
   return (
