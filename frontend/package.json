@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.11.0",
-    "hono": "^4.12.19",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.105.4",
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
