@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { KUKI } from "@/css/utils";
 import { CheckIcon, LockIcon, MailIcon } from "./icons";
 import * as className from "@/css/loginForm";
@@ -11,19 +12,11 @@ interface LoginFormProps {
   defaultRole?: Role;
 }
 
-const loginFormAction = async (_previousState: null, formData: FormData) => {
-  const role = formData.get("role") as Role;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const remember = formData.get("remember") === "on";
-
-  // ここでログイン処理を実装
-  console.log("Logging in with", { role, email, password, remember });
-
-  return _previousState;
-};
+type LoginState = { error: string | null };
 
 export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     role: defaultRole,
     email: "",
@@ -34,10 +27,34 @@ export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
 
   const accent = formData.role === "owner" ? KUKI.dusk : KUKI.forest;
 
-  const [_status, formAction, isPending] = useActionState(
-    loginFormAction,
-    null,
-  );
+  const loginFormAction = async (
+    _previousState: LoginState,
+    submitted: FormData,
+  ): Promise<LoginState> => {
+    const email = submitted.get("email") as string;
+    const password = submitted.get("password") as string;
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) {
+      const body = (await res.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      return { error: body?.error ?? "ログインに失敗しました" };
+    }
+
+    router.push("/");
+    router.refresh();
+    return { error: null };
+  };
+
+  const [status, formAction, isPending] = useActionState(loginFormAction, {
+    error: null,
+  });
   return (
     <form action={formAction} className={className.form}>
       {/* role はトグル (JS state) なので hidden で FormData に乗せる */}
@@ -133,18 +150,26 @@ export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
         </a>
       </div>
 
+      {status.error && (
+        <p className="text-[12px] text-red-500 -mt-1">{status.error}</p>
+      )}
+
       <button
         type="submit"
         disabled={isPending}
         className={className.submit}
         style={{ background: accent, boxShadow: `0 6px 18px ${accent}3a` }}
       >
-        ログイン
+        {isPending ? "ログイン中..." : "ログイン"}
       </button>
 
       <div className={className.signupFooter}>
         はじめての方は
-        <a href="#" className={className.signupLink} style={{ color: accent }}>
+        <a
+          href="/signup"
+          className={className.signupLink}
+          style={{ color: accent }}
+        >
           新規登録
         </a>
       </div>
