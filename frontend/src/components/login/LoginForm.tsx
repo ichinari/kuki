@@ -6,26 +6,17 @@ import { KUKI } from "@/css/utils";
 import { CheckIcon, LockIcon, MailIcon } from "./icons";
 import * as className from "@/css/loginForm";
 
-export type Role = "camper" | "owner";
-
-interface LoginFormProps {
-  defaultRole?: Role;
-}
-
 type LoginState = { error: string | null };
 
-export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
+export default function LoginForm() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    role: defaultRole,
     email: "",
     password: "",
     remember: true,
   });
   const [showPassword, setShowPassword] = useState(false);
-
-  const accent = formData.role === "owner" ? KUKI.dusk : KUKI.forest;
 
   const loginFormAction = async (
     _previousState: LoginState,
@@ -57,33 +48,6 @@ export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
   });
   return (
     <form action={formAction} className={className.form}>
-      {/* role はトグル (JS state) なので hidden で FormData に乗せる */}
-      <input type="hidden" name="role" value={formData.role} />
-
-      <div className={className.roleToggle}>
-        {(
-          [
-            { id: "camper", label: "キャンパー", sub: "泊まる人" },
-            { id: "owner", label: "オーナー", sub: "運営する人" },
-          ] as const
-        ).map((r) => {
-          const on = r.id === formData.role;
-          return (
-            <button
-              type="button"
-              key={r.id}
-              onClick={() => setFormData({ ...formData, role: r.id })}
-              className={`${className.roleBtn} ${
-                on ? className.roleBtnOn : className.roleBtnOff
-              }`}
-            >
-              <div className={className.roleLabel}>{r.label}</div>
-              <div className={className.roleSub}>{r.sub}</div>
-            </button>
-          );
-        })}
-      </div>
-
       <Field label="メールアドレス" icon={<MailIcon />}>
         <input
           type="email"
@@ -125,26 +89,6 @@ export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
       </Field>
 
       <div className={className.rememberRow}>
-        <label className={className.rememberLabel}>
-          <input
-            type="checkbox"
-            name="remember"
-            checked={formData.remember}
-            onChange={(e) =>
-              setFormData({ ...formData, remember: e.target.checked })
-            }
-            className={className.rememberHiddenInput}
-          />
-          <span
-            className={`${className.rememberBox} ${
-              formData.remember ? "" : className.rememberBoxOff
-            }`}
-            style={formData.remember ? { background: accent } : undefined}
-          >
-            {formData.remember && <CheckIcon size={10} />}
-          </span>
-          ログイン状態を保持
-        </label>
         <a href="#" className={className.forgotLink}>
           パスワードを忘れた
         </a>
@@ -154,22 +98,13 @@ export default function LoginForm({ defaultRole = "camper" }: LoginFormProps) {
         <p className="text-[12px] text-red-500 -mt-1">{status.error}</p>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className={className.submit}
-        style={{ background: accent, boxShadow: `0 6px 18px ${accent}3a` }}
-      >
+      <button type="submit" disabled={isPending} className={className.submit}>
         {isPending ? "ログイン中..." : "ログイン"}
       </button>
 
       <div className={className.signupFooter}>
         はじめての方は
-        <a
-          href="/signup"
-          className={className.signupLink}
-          style={{ color: accent }}
-        >
+        <a href="/signup" className={className.signupLink}>
           新規登録
         </a>
       </div>

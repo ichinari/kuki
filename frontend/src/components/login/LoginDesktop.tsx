@@ -68,11 +68,11 @@ export default function LoginDesktop() {
           <div className={className.eyebrow}>ログイン</div>
           <div className={className.pageTitle}>おかえりなさい</div>
           <div className={className.pageSubtitle}>
-            役割を選択してから、ご登録のメールでサインインしてください。
+            ご登録のメール・パスワードでログインしてください。
           </div>
         </div>
 
-        <LoginForm defaultRole="owner" />
+        <LoginForm />
       </div>
     </div>
   );

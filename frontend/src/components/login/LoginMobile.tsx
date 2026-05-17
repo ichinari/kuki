@@ -44,7 +44,7 @@ export default function LoginMobile() {
           <div className={className.brandSubtitle}>空気を、読む。</div>
         </div>
 
-        <LoginForm defaultRole="camper" />
+        <LoginForm />
       </div>
 
       <div className={className.legal}>
