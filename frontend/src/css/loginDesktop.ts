@@ -1,7 +1,7 @@
 // LoginDesktop.tsx 用 Tailwind class 定数
-import { KUKI } from "@/css/utils";
 
-export const root = `flex min-h-screen bg-white text-[${KUKI.ink}] font-[Noto_Sans_JP,system-ui]`;
+export const root =
+  "flex min-h-screen bg-white text-kuki-ink font-[Noto_Sans_JP,system-ui]";
 
 export const leftPane =
   "relative flex flex-col justify-between overflow-hidden flex-[1_1_52%] " +
@@ -22,7 +22,7 @@ export const heroSection = "relative";
 export const heroTitle =
   "text-[38px] font-bold leading-[1.35] mb-[18px] tracking-[-0.01em]";
 
-export const heroAccent = `text-[${KUKI.accent}]`;
+export const heroAccent = "text-kuki-accent";
 
 export const heroDescription =
   "text-[13.5px] opacity-[0.78] leading-[1.85] max-w-[380px]";
@@ -35,13 +35,14 @@ export const footerLink = "text-inherit";
 
 export const rightPane =
   "flex flex-col justify-center flex-[1_1_48%] " +
-  `bg-[${KUKI.dark}] max-w-[540px] ` +
+  "bg-kuki-dark max-w-[540px] " +
   "pt-16 px-16 pb-10";
 
 export const rightPaneHeader = "mb-8";
 
-export const eyebrow = `text-[11px] text-[${KUKI.muted}] tracking-[0.15em] mb-2`;
+export const eyebrow = "text-[11px] text-kuki-muted tracking-[0.15em] mb-2";
 
-export const pageTitle = `text-[26px] font-bold text-[${KUKI.muted}] tracking-[-0.01em]`;
+export const pageTitle =
+  "text-[26px] font-bold text-kuki-muted tracking-[-0.01em]";
 
-export const pageSubtitle = `text-[12.5px] text-[${KUKI.muted}] mt-[6px]`;
+export const pageSubtitle = "text-[12.5px] text-kuki-muted mt-[6px]";
