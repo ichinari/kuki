@@ -6,7 +6,9 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "bun test tests/",
+    "test:watch": "bun test tests/ --watch"
   },
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.11.0",
