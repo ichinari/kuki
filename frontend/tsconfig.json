@@ -2,11 +2,7 @@
   "compilerOptions": {
     // 環境設定と最新の機能
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "moduleDetection": "force",
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,17 +14,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "incremental": true
-  },
-  "plugins": [
-    {
-      "name": "next"
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
     }
-  ],
-  "paths": {
-    "@/*": [
-      "./src/*"
-    ]
   },
   "include": [
     "next-env.d.ts",
