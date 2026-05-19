@@ -8,7 +8,7 @@ const buildClient = () => {
     throw new Error("Supabase環境変数が設定されていません");
   }
 
-  createBrowserClient(url, key);
+  return createBrowserClient(url, key);
 };
 
 // ブラウザではシングルセッションなのでモジュールスコープでシングルトン化
