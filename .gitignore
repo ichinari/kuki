@@ -5,6 +5,9 @@ out/
 dist/
 build/
 
+# TypeScript
+*.tsbuildinfo
+
 # Nix
 result
 result-*

@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+@theme {
+  --color-kuki-white: #ffffff;
+  --color-kuki-accent: #c9e2bb;
+  --color-kuki-dark: #1f1f1f;
+  --color-kuki-darker: #181a1b;
+  --color-kuki-ink: #1a2820;
+  --color-kuki-ink-soft: #3a4a3f;
+  --color-kuki-muted: #6b7a70;
+  --color-kuki-faint: #9ba8a0;
+  --color-kuki-hair: #e3e6df;
+  --color-kuki-paper: #f5f3ec;
+  --color-kuki-card: #ffffff;
+  --color-kuki-forest: #2c5530;
+  --color-kuki-moss: #5a7a4a;
+  --color-kuki-dusk: #1e3a5f;
+  --color-kuki-brown: #282416;
+}
