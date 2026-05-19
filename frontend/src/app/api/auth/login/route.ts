@@ -18,7 +18,10 @@ class LoginRoute extends AuthClient {
     const { data, error } = await this.signIn(email, password);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status ?? 500 },
+      );
     }
 
     return NextResponse.json({ user: data.user });

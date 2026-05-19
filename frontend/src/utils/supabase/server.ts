@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 
-export async function createClient() {
+// React の cache() でラップしてリクエスト単位で同一インスタンスを再利用する
+// (リクエスト間ではキャッシュがリセットされるためセッションは混ざらない)
+export const createClient = cache(async () => {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -24,4 +27,4 @@ export async function createClient() {
       },
     },
   );
-}
+});

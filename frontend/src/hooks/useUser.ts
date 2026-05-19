@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
+import { error } from "console";
 
 /**
  * このアプリ内で扱うユーザー情報.
@@ -34,9 +35,15 @@ export function useUser() {
   useEffect(() => {
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(toHooksUser(data.user));
-    });
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        setUser(toHooksUser(data.user));
+      })
+      .catch((error) => {
+        console.log("ユーザー情報の取得に失敗", error);
+        setUser(null);
+      });
 
     const {
       data: { subscription },

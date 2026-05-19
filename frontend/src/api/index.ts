@@ -86,8 +86,12 @@ export class APIClient {
         const text = await res.text();
         let message = `HTTP ${res.status}`;
         try {
-          const j = JSON.parse(text) as { message?: string; error?: string };
-          message = j.message ?? j.error ?? message;
+          const j: unknown = JSON.parse(text);
+          if (j !== null && typeof j === "object") {
+            const obj = j as Record<string, unknown>;
+            if (typeof obj.message === "string") message = obj.message;
+            else if (typeof obj.error === "string") message = obj.error;
+          }
         } catch {
           if (text) message = text;
         }
