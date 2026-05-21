@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/hooks/useUser";
+import { useUserContext } from "@/contexts/UserProvider";
+import { ROUTES } from "@/routes/route";
 
 interface SignoutButtonProps {
   className?: string;
@@ -14,7 +15,7 @@ export default function SignoutButton({
   children = "ログアウト",
 }: SignoutButtonProps) {
   const router = useRouter();
-  const { resetUser } = useUser();
+  const { resetUser } = useUserContext();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,8 +34,9 @@ export default function SignoutButton({
       return;
     }
 
+    setIsPending(false);
     resetUser();
-    router.push("/login");
+    router.push(ROUTES.LOGIN.path);
     router.refresh();
   };
 
