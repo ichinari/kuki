@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { KUKI } from "@/css/utils";
 import { CheckIcon, LockIcon, MailIcon } from "../login/icons";
 import * as className from "@/css/loginForm";
+import { ROUTES } from "@/routes/route";
+import { ClientAuthClient } from "@/api/auth/client";
 
 export type Role = "camper" | "owner";
 
@@ -14,7 +16,9 @@ interface SignupFormProps {
 
 type SignupState = { error: string | null; message: string | null };
 
-export default function SignupForm({ defaultRole = "camper" }: SignupFormProps) {
+export default function SignupForm({
+  defaultRole = "camper",
+}: SignupFormProps) {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -49,35 +53,42 @@ export default function SignupForm({ defaultRole = "camper" }: SignupFormProps) 
       return { error: "パスワードが一致しません", message: null };
     }
 
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, roleType }),
+    const authClient = new ClientAuthClient();
+    const { data, error } = await authClient.signUp({
+      email,
+      password,
+      roleType,
+      emailRedirectTo: `${window.location.origin}/api/auth/confirm`,
     });
 
-    if (!res.ok) {
-      const body = (await res.json().catch(() => null)) as {
-        error?: string;
-      } | null;
-      return {
-        error: body?.error ?? "登録に失敗しました",
-        message: null,
-      };
+    if (error) {
+      return { error: error.message ?? "登録に失敗しました", message: null };
     }
 
-    const body = (await res.json().catch(() => null)) as {
-      needsEmailConfirmation?: boolean;
-    } | null;
-
-    // メール確認が必要な場合はメッセージ表示、不要(=即セッション発行)ならtopへ
-    if (body?.needsEmailConfirmation) {
+    // session が無い = メール確認が必要なので、確認メッセージを表示して待つ
+    if (!data.session) {
       return {
         error: null,
         message: "確認メールを送信しました。受信箱をご確認ください。",
       };
     }
 
-    router.push("/");
+    // session 即発行 = メール確認不要設定。profiles が作成されていれば role 別トップへ.
+    const userId = data.user?.id;
+    if (userId) {
+      const profile = await authClient.fetch(userId);
+      if (profile) {
+        const dest = profile.roleType
+          ? ROUTES.OWNER.TOP.build(profile.memberId)
+          : ROUTES.CAMPER.TOP.build(profile.memberId);
+        router.push(dest);
+        router.refresh();
+        return { error: null, message: null };
+      }
+    }
+
+    // profile が未作成 (DB trigger 待ち等) のケースは HOME へフォールバック
+    router.push(ROUTES.HOME.path);
     router.refresh();
     return { error: null, message: null };
   };
@@ -214,7 +225,11 @@ export default function SignupForm({ defaultRole = "camper" }: SignupFormProps) 
 
       <div className={className.signupFooter}>
         すでにアカウントをお持ちの方は
-        <a href="/login" className={className.signupLink} style={{ color: accent }}>
+        <a
+          href="/login"
+          className={className.signupLink}
+          style={{ color: accent }}
+        >
           ログイン
         </a>
       </div>

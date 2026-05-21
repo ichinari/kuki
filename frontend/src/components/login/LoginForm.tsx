@@ -2,9 +2,10 @@
 
 import { useActionState, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { KUKI } from "@/css/utils";
-import { CheckIcon, LockIcon, MailIcon } from "./icons";
+import { LockIcon, MailIcon } from "./icons";
 import * as className from "@/css/loginForm";
+import { ROUTES } from "@/routes/route";
+import { ClientAuthClient } from "@/api/auth/client";
 
 type LoginState = { error: string | null };
 
@@ -25,20 +26,31 @@ export default function LoginForm() {
     const email = submitted.get("email") as string;
     const password = submitted.get("password") as string;
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    const authClient = new ClientAuthClient();
+    const { data, error } = await authClient.signIn(email, password);
 
-    if (!res.ok) {
-      const body = (await res.json().catch(() => null)) as {
-        error?: string;
-      } | null;
-      return { error: body?.error ?? "ログインに失敗しました" };
+    if (error) {
+      return { error: error.message ?? "ログインに失敗しました" };
     }
 
-    router.push("/");
+    const userId = data.user?.id;
+    if (!userId) {
+      return { error: "ユーザー情報の取得に失敗しました" };
+    }
+
+    // path id には profiles.member_id を使う (useUser フックの更新を待たずに直接取得)
+    const res = await authClient.fetch(userId);
+    if (!res) {
+      return { error: "プロフィール情報の取得に失敗しました" };
+    }
+
+    const { memberId, roleType } = res;
+    const isOwner = roleType;
+    const dest = isOwner
+      ? ROUTES.OWNER.TOP.build(memberId)
+      : ROUTES.CAMPER.TOP.build(memberId);
+
+    router.push(dest);
     router.refresh();
     return { error: null };
   };
@@ -98,13 +110,17 @@ export default function LoginForm() {
         <p className="text-[12px] text-red-500 -mt-1">{status.error}</p>
       )}
 
-      <button type="submit" disabled={isPending} className={className.submit}>
+      <button
+        type="submit"
+        disabled={isPending}
+        className={className.submitForest}
+      >
         {isPending ? "ログイン中..." : "ログイン"}
       </button>
 
       <div className={className.signupFooter}>
         はじめての方は
-        <a href="/signup" className={className.signupLink}>
+        <a href="/signup" className={className.signupLinkForest}>
           新規登録
         </a>
       </div>
