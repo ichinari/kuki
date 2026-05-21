@@ -1,6 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
-
-type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
@@ -15,7 +13,7 @@ export type ApiResult<T> = {
   error: ApiError | null;
 };
 
-export class APIClient {
+export abstract class APIClient {
   protected baseUrl: string;
   private _id: string | number | null = null;
 
@@ -45,9 +43,8 @@ export class APIClient {
 
   // 3. supabase-js SDK を直接使いたい場合のヘルパー
   //    auth.signInWithPassword / signUp / signOut / getUser などに使用
-  protected async getSupabase(): Promise<SupabaseClient> {
-    return await createClient();
-  }
+  //    サブクラスで server / browser いずれかの supabase クライアントを返す
+  protected abstract getSupabase(): Promise<SupabaseClient> | SupabaseClient;
 
   // 4. REST API 呼び出し時の認証ヘッダ
   //    apikey + 現在セッションの Bearer トークン (未ログイン時は anon key)

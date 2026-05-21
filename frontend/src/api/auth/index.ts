@@ -1,4 +1,5 @@
 import { APIClient } from "@/api";
+import { createClient } from "@/utils/supabase/server";
 
 export type SignUpArgs = {
   email: string;
@@ -10,6 +11,10 @@ export type SignUpArgs = {
 export class AuthClient extends APIClient {
   constructor() {
     super("/auth/v1");
+  }
+
+  protected async getSupabase() {
+    return await createClient();
   }
 
   async signIn(email: string, password: string) {
