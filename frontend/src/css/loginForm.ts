@@ -49,11 +49,18 @@ export const forgotLink =
 export const submit =
   "w-full py-[14px] mt-1 text-white border-none rounded-xl text-[14px] font-bold cursor-pointer tracking-[0.02em]";
 
+// Login 用 submit (固定で forest accent)
+export const submitForest =
+  `${submit} bg-kuki-forest shadow-[0_6px_18px_rgba(44,85,48,0.23)]`;
+
 // Signup footer
 export const signupFooter = "text-center mt-1.5 text-[12px] text-kuki-muted";
 
 // Signup link (color は accent 依存なので inline style 併用)
 export const signupLink = "font-bold no-underline";
+
+// Login 用 signup link (固定で forest accent)
+export const signupLinkForest = `${signupLink} text-kuki-forest`;
 
 // Field component
 export const fieldLabel =
