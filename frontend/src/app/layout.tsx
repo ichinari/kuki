@@ -13,7 +13,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body className="bg-black text-white h-screen">
+      <body className="bg-kuki-paper text-kuki-ink min-h-screen">
         <UserProvider>
           <header>
             ヘッダー <SignoutButton />
