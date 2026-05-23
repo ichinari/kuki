@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/routes/route";
 import { useUserContext } from "@/contexts/UserProvider";
 import SignoutButton from "@/components/SignoutButton";
+import OwnerDesktop from "@/components/owner/OwnerDesktop";
 
 export default function OwnerTop({
   params,
@@ -41,16 +42,18 @@ export default function OwnerTop({
     ownerId !== String(user.memberId)
   ) {
     return (
-      <main className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">お待ちください</h1>
+      <main className="flex flex-col items-center justify-center gap-4 bg-kuki-dark">
+        <h1 className="text-2xl font-bold text-kuki-white">お待ちください</h1>
       </main>
     );
   }
 
   return (
-    <main className="flex flex-col items-center justify-center gap-4">
-      <h1 className="text-2xl font-bold">オーナートップ：{user.userName}</h1>
+    <OwnerDesktop>
+      <h1 className="text-2xl font-bold text-kuki-white hidden md:block">
+        オーナートップ：{user.userName}
+      </h1>
       <SignoutButton />
-    </main>
+    </OwnerDesktop>
   );
 }
